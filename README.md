@@ -141,3 +141,64 @@ Build a multi-tenant farm automation platform that allows landlords/farmers to m
 - Basic schedule execution logic (backend only)
 - Email notification setup (basic SMTP)
 - Simple dashboard (device status, next run)
+
+## 🚀 Local Development
+
+To run the platform locally for rapid development:
+
+### 1. Frontend (React)
+- Navigate to the frontend directory:
+  ```bash
+  cd frontend
+  npm install
+  npm start
+  ```
+- The app will be available at [http://localhost:3000](http://localhost:3000)
+- Uses the API URL set in `frontend/.env.development`
+
+### 2. Backend (FastAPI)
+- Navigate to the backend directory:
+  ```bash
+  cd backend
+  pip install -r requirements.txt
+  uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+  ```
+- The API will be available at [http://localhost:8000](http://localhost:8000)
+- **Note:** By default, the backend always loads environment variables from `backend/.env`. If you want to use `backend/.env.development`, you must manually copy or rename it to `.env` before running the backend locally:
+  ```bash
+  cp .env.development .env
+  ```
+
+### 3. MQTT Broker (Mosquitto)
+- You can run Mosquitto locally (if installed) or via Docker:
+  ```bash
+  # Using Docker Compose (recommended)
+  docker-compose -f docker/docker-compose.yml up mosquitto
+  ```
+- MQTT will be available at `mqtt://localhost:1883` (and WebSocket on 9001)
+
+---
+
+## 🐳 Running with Docker Compose
+
+To run the full stack in Docker containers:
+
+```bash
+make up
+# or
+cd docker
+docker-compose up --build
+```
+
+- **Frontend**: Served by Nginx at [http://localhost:3000](http://localhost:3000)
+- **Backend**: FastAPI at [http://localhost:8000](http://localhost:8000)
+- **MQTT**: Mosquitto at `mqtt://localhost:1883`
+
+### Environment Files Used
+- **Backend**: Uses `backend/.env.development` (can be changed in `docker-compose.yml`)
+- **Frontend**: Uses production build (reads from `frontend/.env.production` at build time)
+
+> **Note:**
+> - Changes to code require rebuilding the Docker images to take effect.
+> - For rapid development, use the local development workflow above.
+> - To change environment variables, update the respective `.env` files and rebuild the containers.
