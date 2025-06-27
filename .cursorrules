@@ -1,0 +1,84 @@
+# Cursor Rules for Farm Automation Platform
+# This file is machine-readable and can be extended for future automation or CI tooling.
+
+project:
+  name: Farm Automation Platform
+  description: Multi-tenant farm automation with FastAPI, React, MySQL, MQTT, and IoT
+
+structure:
+  backend: app/
+  frontend: frontend/
+  device_agent: device-agent/
+  docs: docs/
+
+backend:
+  framework: FastAPI
+  database: MySQL
+  orm: SQLAlchemy
+  migrations: Alembic
+  api_versioning: true
+  jwt_auth: true
+  rbac: true
+  env_vars: true
+  error_format: json
+  service_layer: true
+  password_hashing: bcrypt
+  endpoints:
+    - versioned: true
+    - secure: true
+    - rbac: true
+
+frontend:
+  framework: React
+  language: TypeScript
+  state_management: Redux Toolkit or Zustand
+  api_abstraction: true
+  env_vars: true
+  router: React Router
+  forms: Formik + Yup
+  ui_library: MUI or Ant Design
+  linting: eslint
+  formatting: prettier
+
+mysql:
+  migrations: alembic_only
+  engine: InnoDB
+  encoding: utf8
+  foreign_keys: true
+  no_plaintext_secrets: true
+  indexes: foreign_keys_and_frequent_queries
+
+mqtt:
+  topic_naming: tenant/{tenant_id}/device/{device_id}/status
+  message_format: json
+  tls: production_only
+  offline_buffering: true
+  local_storage: sqlite
+  device_reporting: all_actions
+
+raspberry_pi:
+  language: Python3
+  mqtt_lib: paho-mqtt
+  gpio_lib: gpiozero or RPi.GPIO
+  local_storage: sqlite
+  ota_updates: planned
+  resilience: power_loss_and_network_outage
+
+quality:
+  backend_tests: pytest
+  frontend_tests: jest
+  linting: [black, flake8, eslint, prettier]
+  precommit_hooks: true
+
+security:
+  no_log_secrets: true
+  https: true
+  mqtt_tls: true
+  password_policy: strong
+  account_lockout: true
+
+collaboration:
+  pull_requests: required
+  code_review: required
+  commit_messages: descriptive
+  docs_update: required 

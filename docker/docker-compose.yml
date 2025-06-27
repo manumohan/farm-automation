@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: farm_automation
+      MYSQL_USER: farmuser
+      MYSQL_PASSWORD: farmpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - farmnet
+
+  backend:
+    build: ../backend
+    container_name: backend
+    restart: always
+    environment:
+      - DATABASE_URL=mysql+pymysql://farmuser:farmpassword@mysql:3306/farm_automation
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - mysql
+    ports:
+      - "8000:8000"
+    networks:
+      - farmnet
+
+  frontend:
+    build: ../frontend
+    container_name: frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - farmnet
+
+  device-agent:
+    build: ../device-agent
+    container_name: device-agent
+    restart: always
+    networks:
+      - farmnet
+    environment:
+      - MQTT_BROKER=mqtt.eclipseprojects.io
+      - MQTT_PORT=1883
+      - DEVICE_ID=test-device-001
+      - TENANT_ID=test-tenant-001
+
+volumes:
+  mysql_data:
+
+networks:
+  farmnet:
+    driver: bridge 

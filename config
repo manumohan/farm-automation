@@ -1,0 +1,12 @@
+Host my-presto-emr
+    HostName 10.202.43.153
+    User ec2-user
+    IdentityFile ~/.ssh/presto-private-key.pem   # Or path to your private key
+  
+
+
+Host github-manumohan
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519_manumohan
+
