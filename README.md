@@ -190,15 +190,72 @@ cd docker
 docker-compose up --build
 ```
 
-- **Frontend**: Served by Nginx at [http://localhost:3000](http://localhost:3000)
+### Services Available
+- **Frontend**: React app at [http://localhost:3000](http://localhost:3000)
 - **Backend**: FastAPI at [http://localhost:8000](http://localhost:8000)
-- **MQTT**: Mosquitto at `mqtt://localhost:1883`
+- **MQTT Broker**: Mosquitto at `mqtt://localhost:1883` and WebSocket at `ws://localhost:9001`
+- **MQTT Management UI**: Custom web interface at [http://localhost:8088](http://localhost:8088)
 
 ### Environment Files Used
 - **Backend**: Uses `backend/.env.development` (can be changed in `docker-compose.yml`)
 - **Frontend**: Uses production build (reads from `frontend/.env.production` at build time)
 
-> **Note:**
-> - Changes to code require rebuilding the Docker images to take effect.
-> - For rapid development, use the local development workflow above.
-> - To change environment variables, update the respective `.env` files and rebuild the containers.
+## 🔧 MQTT Testing & Management
+
+### MQTT Management UI
+Access the MQTT management interface at [http://localhost:8088](http://localhost:8088) to:
+- Monitor MQTT topics and messages
+- Test device communications
+- Debug MQTT connections
+- View real-time message flow
+
+### Testing MQTT Connections
+
+#### 1. Using the Web UI
+1. Open [http://localhost:8088](http://localhost:8088)
+2. Use the embedded HiveMQ Web Client
+3. Connect to:
+   - **WebSocket**: `ws://localhost:9001`
+   - **MQTT**: `localhost:1883`
+4. Subscribe to test topics:
+   - `test/topic`
+   - `tenant/+/device/+/status`
+   - `tenant/+/device/+/logs`
+
+#### 2. Using Command Line
+```bash
+# Subscribe to a topic
+docker exec -it mosquitto mosquitto_sub -h localhost -t "test/topic" -v
+
+# Publish a message
+docker exec -it mosquitto mosquitto_pub -h localhost -t "test/topic" -m "Hello from device agent"
+
+# Test device status message
+docker exec -it mosquitto mosquitto_pub -h localhost -t "tenant/1/device/123/status" -m '{"status": "online", "timestamp": "2024-01-01T12:00:00Z"}'
+```
+
+#### 3. Testing Device Agent Topics
+```bash
+# Device status updates
+docker exec -it mosquitto mosquitto_pub -h localhost -t "tenant/1/device/123/status" -m '{"status": "online", "battery": 85, "signal": -45}'
+
+# Device logs
+docker exec -it mosquitto mosquitto_pub -h localhost -t "tenant/1/device/123/logs" -m '{"level": "info", "message": "Schedule executed successfully", "timestamp": "2024-01-01T12:00:00Z"}'
+
+# Device events
+docker exec -it mosquitto mosquitto_pub -h localhost -t "tenant/1/device/123/events" -m '{"event": "valve_opened", "section_id": 1, "duration": 300}'
+```
+
+### MQTT Topic Structure
+The platform uses the following MQTT topic structure:
+- `tenant/{tenant_id}/device/{device_id}/status` - Device status updates
+- `tenant/{tenant_id}/device/{device_id}/logs` - Device logs
+- `tenant/{tenant_id}/device/{device_id}/events` - Device events
+- `tenant/{tenant_id}/device/{device_id}/commands` - Commands to device
+
+### MQTT Configuration
+- **Broker**: Mosquitto 2.0
+- **Ports**: 1883 (MQTT), 9001 (WebSocket)
+- **Authentication**: Anonymous access enabled
+- **Persistence**: Enabled with data stored in `/mosquitto/data/`
+- **Logging**: Enabled with logs in `/mosquitto/log/`

@@ -16,6 +16,17 @@ services:
     networks:
       - farmnet
 
+  mqtt-web-client:
+    image: nginx:alpine
+    container_name: mqtt-web-client
+    restart: always
+    ports:
+      - "8088:80"
+    volumes:
+      - ./mqtt-web-client:/usr/share/nginx/html
+    networks:
+      - farmnet
+
   backend:
     build: ../backend
     container_name: backend
