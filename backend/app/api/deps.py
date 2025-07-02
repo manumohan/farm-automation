@@ -9,7 +9,7 @@ from app.services.user_service import get_user_by_username
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 
 SECRET_KEY = settings.SECRET_KEY
-ALGORITHM = "HS256"
+ALGORITHM = settings.ALGORITHM
 
 # Dependency to get DB session
 

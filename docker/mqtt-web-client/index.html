@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farm Automation MQTT Client</title>
+    <title>Farm Automation MQTT Management & Testing</title>
     <style>
         body {
             margin: 0;
@@ -15,6 +15,13 @@
             text-align: center;
             margin-bottom: 20px;
             color: #333;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
         }
         .mqtt-frame {
             width: 100%;
@@ -44,10 +51,12 @@
 </head>
 <body>
     <div class="header">
-        <h1>🌾 Farm Automation MQTT Management</h1>
-        <p>Connect to your Mosquitto MQTT broker to monitor device communications</p>
+        <h1>🌾 Farm Automation MQTT Management & Testing Center</h1>
     </div>
-
+    <div class="subtitle">
+        Monitor, test, and debug your IoT device communications in real time.<br>
+        Use the embedded HiveMQ Web Client below to connect, subscribe, and publish to your MQTT topics.
+    </div>
     <div class="connection-info">
         <h3>🔗 Quick Connection Settings</h3>
         <p><strong>Host:</strong> <code>localhost</code> | <strong>Port:</strong> <code>1883</code> (MQTT) or <code>9001</code> (WebSocket)</p>
@@ -55,13 +64,11 @@
         <p><strong>Authentication:</strong> None (anonymous access enabled)</p>
         <p><strong>Test Topics:</strong> <code>test/topic</code>, <code>tenant/+/device/+/status</code></p>
     </div>
-
     <iframe 
         class="mqtt-frame"
         src="https://www.hivemq.com/demos/websocket-client/"
         title="MQTT Web Client">
     </iframe>
-
     <script>
         // Add some helpful information
         console.log('Farm Automation MQTT Client loaded');

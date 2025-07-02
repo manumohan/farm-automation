@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+if [ ! -d /opt/device-agent/venv ]; then
+  python3 -m venv /opt/device-agent/venv
+fi
+/opt/device-agent/venv/bin/pip install --upgrade pip
+/opt/device-agent/venv/bin/pip install -r /opt/device-agent/requirements.txt
+# Only create config if it does not exist
+if [ ! -f /etc/device-agent/config.json ]; then
+  cp /etc/device-agent/config.json.example /etc/device-agent/config.json
+  echo "Created default config at /etc/device-agent/config.json. Please edit this file with your device settings."
+fi
+systemctl daemon-reload
+systemctl enable device-agent.service
+systemctl restart device-agent.service

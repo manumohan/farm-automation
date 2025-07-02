@@ -49,6 +49,18 @@ services:
     networks:
       - farmnet
 
+  mqtt-status-worker:
+    build: ../backend
+    container_name: mqtt-status-worker
+    restart: always
+    env_file:
+      - ../backend/.env.development
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: ["python", "-m", "app.mqtt_status_worker"]
+    networks:
+      - farmnet
+
 networks:
   farmnet:
     driver: bridge 

@@ -1,0 +1,6 @@
+{
+  "deviceId": "REPLACE_WITH_DEVICE_ID",
+  "farmId": "REPLACE_WITH_FARM_ID",
+  "mqtt_broker": "REPLACE_WITH_BROKER",
+  "mqtt_port": 1883
+}
